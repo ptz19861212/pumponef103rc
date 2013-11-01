@@ -1,0 +1,28 @@
+#import rtconfig
+#Import('RTT_ROOT')
+from building import *
+
+# get current directory
+cwd = GetCurrentDir()
+
+# The set of source files associated with this SConscript file.
+src = Split("""
+buzzer/buzzer.c
+display/uc1701/jlx128640/pump-one/uc1701.c
+display/uc1701/jlx128640/pump-one/display_uc1701.c
+display/uc1701/jlx128640/pump-one/font_ascii.c
+display/uc1701/jlx128640/pump-one/font_symbol.c
+""")
+
+path = []
+
+#path = [cwd + '/STM32L1xx_StdPeriph_Driver/inc', 
+    #cwd + '/CMSIS/Device/ST/STM32L1xx/Include']
+
+path += [cwd + '/../include']
+path += [cwd + '/../../../include']
+
+CPPDEFINES = []
+group = DefineGroup('bsp_driver', src, depend = [''], CPPPATH = path, CPPDEFINES = CPPDEFINES)
+
+Return('group')

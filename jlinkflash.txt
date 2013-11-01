@@ -1,0 +1,7 @@
+h
+speed 4800
+exec device=stm32f103rc
+loadbin rtthread.bin 0x08000000
+r
+g
+qc
