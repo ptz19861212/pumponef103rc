@@ -1,0 +1,3 @@
+/* %MATRIXCODE_HEAD_FONT%*/
+/* Í¼Ïñ D:\development\tool\matrix\CharacterMatrix\battery\charge.jpg    4x8   */
+0x90,0x90,0x90,0xF0,0xF0,0x60,0x60,0x60,

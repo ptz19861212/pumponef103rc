@@ -1,0 +1,26 @@
+Import('RTT_ROOT')
+Import('rtconfig')
+from building import *
+
+cwd     = os.path.join(str(Dir('#')), 'drv')
+
+# add the general drvers.
+src = Split("""
+buzzer/buzzer.c
+display/uc1701/jlx128640/pump-one/uc1701.c
+display/uc1701/jlx128640/pump-one/display_uc1701.c
+display/uc1701/jlx128640/pump-one/font_ascii.c
+display/uc1701/jlx128640/pump-one/font_symbol.c
+""")
+
+
+    
+CPPPATH = []
+CPPPATH += [cwd + '/../inc']
+CPPPATH += [cwd + '/../../../include']
+CPPPATH += [cwd + '/../lib/sort/flush_left']
+CPPPATH += [cwd + '/../lib/sort/char_swap']
+
+group = DefineGroup('Drv', src, depend = [''], CPPPATH = CPPPATH)
+
+Return('group')

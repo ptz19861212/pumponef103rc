@@ -1,0 +1,21 @@
+Import('RTT_ROOT')
+Import('rtconfig')
+from building import *
+
+cwd     = os.path.join(str(Dir('#')), 'lib')
+
+# add the general drvers.
+src = Split("""
+sort/flush_left/flush_left.c
+sort/char_swap/char_swap.c
+""")
+
+
+    
+CPPPATH = []
+CPPPATH += [cwd + '/../inc']
+CPPPATH += [cwd + '/../../../include']
+
+group = DefineGroup('Lib', src, depend = [''], CPPPATH = CPPPATH)
+
+Return('group')

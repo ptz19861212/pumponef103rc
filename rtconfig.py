@@ -3,6 +3,7 @@ import os
 # toolchains options
 ARCH='arm'
 CPU='cortex-m3'
+#CROSS_TOOL='keil'
 CROSS_TOOL='gcc'
 
 if os.getenv('RTT_CC'):
@@ -25,6 +26,7 @@ RT_USING_LCD_TYPE = 'SSD1289'
 
 if  CROSS_TOOL == 'gcc':
 	PLATFORM 	= 'gcc'
+	#EXEC_PATH 	= 'D:/SourceryGCC/bin'
 	EXEC_PATH 	= '/home/ptz/opt/sourcery/arm-none-eabi-gcc/arm-2012.09/bin'
 elif CROSS_TOOL == 'keil':
 	PLATFORM 	= 'armcc'
