@@ -17,6 +17,7 @@
 #ifndef __MY_ERRNO_H__
 #define __MY_ERRNO_H__
 
+//typedef my_base_t my_err_t;
 
 #define	ESUC		 0	/* Success */
 #define	EPERM		 1	/* Operation not permitted */

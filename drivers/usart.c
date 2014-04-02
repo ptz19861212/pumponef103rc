@@ -19,6 +19,7 @@
 #include "board.h"
 
 #include <rtdevice.h>
+#include <rtdef.h>
 
 /* USART1 */
 #define UART1_GPIO_TX		GPIO_Pin_9

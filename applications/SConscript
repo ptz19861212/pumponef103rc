@@ -6,6 +6,17 @@ cwd     = os.path.join(str(Dir('#')), 'applications')
 src	= Glob('*.c')
 CPPPATH = [cwd, str(Dir('#'))]
 CPPPATH += [cwd + '/../drv/display/uc1701/jlx128640/pump-one']
+CPPPATH += [cwd + '/../drv/key']
+CPPPATH += [cwd + '/../lib/menu']
+CPPPATH += [cwd + '/../lib/bsp/buzzer']
+CPPPATH += [cwd + '/../lib/bsp/vibration']
+CPPPATH += [cwd + '/../lib/bsp/led']
+CPPPATH += [cwd + '/../lib/bsp/charge']
+CPPPATH += [cwd + '/../lib/state']
+CPPPATH += [cwd + '/../lib/sort/bubble_sort']
+CPPPATH += [cwd + '/../lib/reckon/average']
+CPPPATH += [cwd + '/../inc']
+CPPPATH += [cwd + '/../app/state_app']
 
 group = DefineGroup('Applications', src, depend = [''], CPPPATH = CPPPATH)
 

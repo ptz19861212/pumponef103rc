@@ -15,14 +15,325 @@
 #ifndef __MY_DISPLAY_H__
 #define __MY_DISPLAY_H__
 
+#include <stdint.h>
+#include "config_bsp.h"
+#include "my_num.h"
+#include "my_define.h"
 
-// point
-#define POINT_HHHHH                             0
-#define POINT_HHHHXH                            1
-#define POINT_HHHXHH                            2
-#define POINT_HHXHHH                            3
-#define POINT_HXHHHH                            4
 
+
+// 点阵屏幕
+#ifndef CONFIG_LCD_NIXIETUBE
+
+
+// 根据不同的芯片选择不同的LCD结构体
+#ifdef CONFIG_LCD_CHIP_UC1701
+	typedef uint8_t 								my_lcd_t;
+
+//	#define DIS_X_START							0
+//	#define DIS_Y_START							0
+//	#define DIS_X_END								127
+//	#define DIS_Y_END								63
+
+#endif
+
+
+/*********************************** 底层显示结构体 *******************************/
+// 画点或者点的坐标
+typedef struct
+{
+	my_lcd_t X;
+	my_lcd_t Y;
+}S_Lcd_Point;
+
+// 框架扩展的数据
+typedef struct
+{
+	my_lcd_t X;
+	my_lcd_t Y;
+}S_Lcd_FrameExtend;
+
+// 画水平线
+typedef struct
+{
+	// xStart
+	my_lcd_t XS;
+	// xEnd
+	my_lcd_t XE;
+	my_lcd_t Y;
+}S_Lcd_Line_Horizon;
+
+// 画垂直线
+typedef struct
+{
+	my_lcd_t X;
+	// yStart
+	my_lcd_t YS;
+	// yEnd
+	my_lcd_t YE;
+}S_Lcd_Line_Vertical;
+
+// 画45度斜线
+typedef struct
+{
+	S_Lcd_Point Point;
+	// 第几象限
+	uint8_t Quad;
+	// 水平距离
+	my_lcd_t Len;
+}S_Lcd_Line_Diagonal;
+
+// 画矩形
+typedef struct
+{
+	// pointStart
+	S_Lcd_Point PS;
+	// pointEnd
+	S_Lcd_Point PE;
+}S_Lcd_Area_Rectangle;
+
+// 画圆
+typedef struct
+{
+	// pointCenter
+	S_Lcd_Point PC;
+	// 半径
+	my_lcd_t Radius;
+}S_Lcd_Area_Cycle;
+
+// 画带阴影的矩形
+typedef struct
+{
+	// pointStart
+	S_Lcd_Point PS;
+	// pointEnd，这个点包含了阴影
+	S_Lcd_Point PE;
+	// Shade Ex
+	S_Lcd_FrameExtend Ex;
+}S_Lcd_Area_RectangleShade;
+
+// 画带斜线阴影的矩形
+typedef struct
+{
+	// pointStart
+	S_Lcd_Point PS;
+	// pointEnd
+	S_Lcd_Point PE;
+	// Shade Ex
+	S_Lcd_FrameExtend Ex;
+}S_Lcd_Area_RectangleDiagonal;
+
+// 显示字符的X Y 方向的像素
+typedef struct
+{
+	my_lcd_t X;
+	my_lcd_t Y;
+}S_Lcd_Pixel_Char;
+
+// 显示字符的相关属性
+typedef struct
+{
+	// pointStart 字符左上角
+	S_Lcd_Point PS;
+	// 字库中对应的字符的地址
+	const char* Font;
+	// size
+	S_Lcd_Pixel_Char Pixel;
+}S_Lcd_Char;
+
+// 显示滚动条的相关
+typedef struct
+{
+	// 滚动条长线的起始X
+	my_lcd_t X;
+	// 滚动条长线的起始y
+	my_lcd_t YS;
+	// 滚动条长线的结束y
+	my_lcd_t YE;
+	// 滚动条滑块的Y长度
+	my_lcd_t SYLen;
+	// 滚动条一边比线多出来的宽度
+	my_lcd_t SXEx;
+	// 滚动条滑块的起始y
+	my_lcd_t SYS;
+}S_Lcd_Bar_Scroll;
+
+
+/*********************************** 中层显示结构体 ********************************/
+// 屏幕参数
+typedef struct
+{
+	S_Lcd_Point PS;
+	S_Lcd_Point PE;
+}S_Lcd_Screen;
+
+// 屏幕文字的参数
+typedef struct
+{
+	// 字库
+	const char* Font;
+	// X 方向字体占的点数
+//	uint8_t X;
+	// Y 方向字体占的点数
+//	uint8_t Y;
+	// 实际显示的像素
+	S_Lcd_Pixel_Char Pixel;
+	// 实际占有的空间的像素
+	S_Lcd_Pixel_Char Own;
+	// 在字库中占有的字节数
+	uint16_t Size;
+}S_Lcd_Txt;
+
+typedef struct
+{
+	// 字库
+	const char* Font;
+	// X 方向占的点数
+//	uint8_t X;
+	// Y 方向占的点数
+//	uint8_t Y;
+	S_Lcd_Pixel_Char Pixel;
+	// 在字库中占有的字节数
+	uint16_t Size;
+}S_Lcd_Symbol;
+
+typedef struct
+{
+	// 字库
+	const char* Font;
+	// X 方向占的点数
+//	uint16_t X;
+	// Y 方向占的点数
+//	uint16_t Y;
+	S_Lcd_Pixel_Char Pixel;
+	// 在字库中占有的字节数
+	uint32_t Size;
+}S_Lcd_Image;
+
+
+typedef struct
+{
+	// 字体大小
+	const S_Lcd_Txt* Txt;
+	// 起始的点
+	S_Lcd_Point PS;
+	// 字符串
+	const char* Char;
+}S_Lcd_String;
+
+typedef struct
+{
+//	// 字体大小
+//	S_Lcd_Txt* Txt;
+//	// 起始的点
+//	S_Lcd_Point PS;
+//	// 字符串
+//	const char* Char;
+	S_Lcd_String Str;
+	// 字符串靠右显示的位数
+	uint8_t Len;
+}S_Lcd_String_Right;
+
+typedef S_Lcd_String_Right				S_Lcd_String_Middle;
+
+
+typedef struct
+{
+	// 显示的字符
+	S_Lcd_String Str;
+	// 8位数值
+	// 8位数值 注意这边的字符指针是char*，是对应的字符数组的，要求是可变的。
+	// 上面的那个是 const char*，是对应的显示字符串的，可以不可变的。
+	S_Value_Array_U8 Array;
+}S_Lcd_Value_U8;
+
+typedef struct
+{
+	// 显示的字符
+	S_Lcd_String Str;
+//	S_Value_U16 Value;
+	// 16位数值 注意这边的字符指针是char*，是对应的字符数组的，要求是可变的。
+	// 上面的那个是 const char*，是对应的显示字符串的，可以不可变的。
+	S_Value_Array_U16 Array;
+}S_Lcd_Value_U16;
+
+typedef struct
+{
+	// 显示的字符
+	S_Lcd_String Str;
+	// 32位数值
+//	S_Value_U32 Value;
+	// 32位数值 注意这边的字符指针是char*，是对应的字符数组的，要求是可变的。
+	// 上面的那个是 const char*，是对应的显示字符串的，可以不可变的。
+	S_Value_Array_U32 Array;
+}S_Lcd_Value_U32;
+
+typedef struct
+{
+	// 显示的字符
+	S_Lcd_String_Right Str;
+	// 8位数值
+//	S_Value_Right_U8 Value;
+//	S_Value_U8 Value;
+	// 8位数值 注意这边的字符指针是char*，是对应的字符数组的，要求是可变的。
+	// 上面的那个是 const char*，是对应的显示字符串的，可以不可变的。
+	S_Value_Array_U8 Array;
+}S_Lcd_Value_Right_U8;
+
+typedef struct
+{
+	// 显示的字符
+	S_Lcd_String_Right Str;
+	// 16位数值
+//	S_Value_Right_U16 Value;
+	// 16位数值 注意这边的字符指针是char*，是对应的字符数组的，要求是可变的。
+	// 上面的那个是 const char*，是对应的显示字符串的，可以不可变的。
+//	S_Value_U16 Value;
+	S_Value_Array_U16 Array;
+}S_Lcd_Value_Right_U16;
+
+typedef struct
+{
+	// 显示的字符
+	S_Lcd_String_Right Str;
+	// 32位数值
+//	S_Value_Right_U32 Value;
+//	S_Value_U32 Value;
+	// 32位数值 注意这边的字符指针是char*，是对应的字符数组的，要求是可变的。
+	// 上面的那个是 const char*，是对应的显示字符串的，可以不可变的。
+	S_Value_Array_U32 Array;
+}S_Lcd_Value_Right_U32;
+
+
+typedef struct
+{
+	// 字体大小
+	const S_Lcd_Txt* TxtLarge;
+	// 字体大小
+	const S_Lcd_Txt* TxtSmall;
+	// 起始的点
+	S_Lcd_Point PS;
+	// 字符串
+	const char* Char;
+}S_Lcd_String_Dual;
+
+
+// 菜单区域闪烁
+typedef struct
+{
+	// 反显区域
+	S_Lcd_Area_Rectangle Rec;
+	// 使能
+	E_TurnState State;
+}S_Lcd_Blink;
+
+
+
+
+
+
+// 段式屏幕
+#else
 
 // nixietube label
 #define LABEL_NO 				0x00
@@ -189,6 +500,8 @@
 #define CHARACTER__		35
 #define CHARACTER_i		36
 #define CHARACTER_NULL		37
+
+#endif
 
 
 #endif

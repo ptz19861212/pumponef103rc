@@ -18,3 +18,4 @@ Libraries/
 *.bak
 JLink.log
 log
+*.tar.gz

@@ -22,8 +22,9 @@
 #include <stm32f10x_gpio.h>
 
 // buzzer define
-#define buzzer_rcc                    RCC_APB2Periph_GPIOB
-#define buzzer_gpio                   GPIOB
-#define buzzer_pin                    (GPIO_Pin_4)
+#define BUZZER_RCC				\
+					(RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO)
+#define BUZZER_GPIO                   GPIOB
+#define BUZZER_PIN                    (GPIO_Pin_4)
 
 #endif

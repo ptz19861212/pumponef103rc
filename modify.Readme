@@ -28,3 +28,6 @@ str(Dir('#'))  获得scons 运行时的目录
 	9+ CODE (rx) : ORIGIN = 0x08000000, LENGTH = 256k /* 64KB flash */
 	10- DATA (rw) : ORIGIN = 0x20000000, LENGTH =  64k /* 64K sram */
 	10+ DATA (rw) : ORIGIN = 0x20000000, LENGTH =  48k /* 10K sram */
+
+6. board.c
+	49+ NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);

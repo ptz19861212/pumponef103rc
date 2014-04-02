@@ -6,8 +6,40 @@ cwd     = os.path.join(str(Dir('#')), 'lib')
 
 # add the general drvers.
 src = Split("""
+menu/menu_frame.c
+state/state.c
+delay/delay.c
+convert/num_to_str/num_to_str.c
 sort/flush_left/flush_left.c
+sort/flush_right/flush_right.c
 sort/char_swap/char_swap.c
+sort/bubble_sort/bubble_sort.c
+reckon/average/average.c
+get/bit_get/bit_get.c
+get/gas_get/gas_value_get.c
+get/gas_get/gas_alarm_get.c
+get/bat_get/bat_get.c
+input/value_input/value_input.c
+convert/str_to_num/str_to_num.c
+display/display.c
+state/state_input.c
+cali/gas_cali/gas_cali_zero.c
+cali/gas_cali/gas_cali_coeff.c
+state/state_countdown.c
+limit/num_limit.c
+bsp/buzzer/bsp_buzzer.c
+bsp/vibration/bsp_vibration.c
+state/state_result.c
+self_check/self_check.c
+convert/calendar/calendar_lang.c
+bsp/led/bsp_led.c
+operate/alarm_operate/alarm_operate.c
+bsp/source/bsp_source.c
+bsp/pump/bsp_pump.c
+state/state_shutdown.c
+state/state_info.c
+bsp/charge/bsp_charge.c
+power_save/power_save_bgl.c
 """)
 
 
@@ -15,6 +47,20 @@ sort/char_swap/char_swap.c
 CPPPATH = []
 CPPPATH += [cwd + '/../inc']
 CPPPATH += [cwd + '/../../../include']
+CPPPATH += [cwd + '/../drv/display']
+CPPPATH += [cwd + '/../drv/pump']
+CPPPATH += [cwd + '/../drv/source']
+CPPPATH += [cwd + '/../drv/charge']
+CPPPATH += [cwd + '/../ocp/flash']
+CPPPATH += [cwd + '/get/gas_get']
+CPPPATH += [cwd + '/limit']
+CPPPATH += [cwd + '/bsp/source']
+CPPPATH += [cwd + '/bsp/pump']
+CPPPATH += [cwd + '/../app/menu_app']
+CPPPATH += [cwd + '/../app/state_app']
+CPPPATH += [cwd + '/../app/self_check_app']
+CPPPATH += [cwd + '/convert/str_to_num']
+CPPPATH += [cwd + '/display']
 
 group = DefineGroup('Lib', src, depend = [''], CPPPATH = CPPPATH)
 

@@ -1,11 +1,11 @@
 /**
  * @file    buzzer.h
- * @brief   ·äÃùÆ÷
+ * @brief   èœ‚é¸£å™¨
  * @author  ptz
  * @email   ptz19861212@163.com
  * @version 0.0.1
- * @date    2013-08-05 10:54:16 ĞÇÆÚÒ» 
- * @history (1).2013-08-05 10:54:16 ĞÇÆÚÒ» create
+ * @date    2013-08-05 10:54:16 æ˜ŸæœŸä¸€
+ * @history (1).2013-08-05 10:54:16 æ˜ŸæœŸä¸€ create
  */
 /* Copyright (C)
  * 
@@ -17,8 +17,23 @@
 #ifndef __BUZZER_H__
 #define __BUZZER_H__
 
-inline void BUZZER_Init(void);
+
+/**
+ * @brief   èœ‚é¸£å™¨æ‰“å¼€
+ */
 inline void BUZZER_On(void);
+
+
+/**
+ * @brief   èœ‚é¸£å™¨å…³é—­
+ */
 inline void BUZZER_Off(void);
+
+
+/**
+ * @brief   èœ‚é¸£å™¨åˆå§‹åŒ–
+ */
+inline void BUZZER_Init(void);
+
 
 #endif

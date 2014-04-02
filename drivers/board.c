@@ -46,6 +46,7 @@ void NVIC_Configuration(void)
     /* Set the Vector Table base location at 0x08000000 */
     NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x0);
 #endif
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 }
 
 #if STM32_EXT_SRAM

@@ -22,6 +22,8 @@
 #include "sdcard.h"
 #include "stm32f10x_dma.h"
 #include "stm32f10x_sdio.h"
+#include "stm32f10x_rcc.h"
+#include "stm32f10x_gpio.h"
 #include "stdbool.h"
 #include <rtthread.h>
 
@@ -100,8 +102,9 @@
    SDIO_APP_CMD should be sent before sending these commands. */
 #define SDIO_SEND_IF_COND               ((uint32_t)0x00000008)
 
+// 当SD/SDIO卡或多媒体卡在识别模式,SDIO_CK的频率必须低于400kHz。
 #define SDIO_INIT_CLK_DIV                  ((uint8_t)0xB2)
-#define SDIO_TRANSFER_CLK_DIV              ((uint8_t)0x1)
+#define SDIO_TRANSFER_CLK_DIV              ((uint8_t)0x2)//((uint8_t)0x1)
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
@@ -2829,6 +2832,8 @@ static SD_Error FindSCR(uint16_t rca, uint32_t *pscr)
         {
             *(tempscr + index) = SDIO_ReadData();
             index++;
+            if (index >= 2)
+            	break;
         }
     }
 

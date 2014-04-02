@@ -7,10 +7,17 @@ cwd     = os.path.join(str(Dir('#')), 'drv')
 # add the general drvers.
 src = Split("""
 buzzer/buzzer.c
-display/uc1701/jlx128640/pump-one/uc1701.c
-display/uc1701/jlx128640/pump-one/display_uc1701.c
-display/uc1701/jlx128640/pump-one/font_ascii.c
-display/uc1701/jlx128640/pump-one/font_symbol.c
+key/key.c
+display/uc1701.c
+display/display_uc1701.c
+display/font_ascii.c
+display/font_symbol.c
+display/font_chinese.c
+vibration/vibration.c
+led/led.c
+pump/pump.c
+source/source.c
+charge/charge.c
 """)
 
 
@@ -20,6 +27,8 @@ CPPPATH += [cwd + '/../inc']
 CPPPATH += [cwd + '/../../../include']
 CPPPATH += [cwd + '/../lib/sort/flush_left']
 CPPPATH += [cwd + '/../lib/sort/char_swap']
+CPPPATH += [cwd + '/../lib/convert/num_to_str']
+CPPPATH += [cwd + '/../lib/get/bit_get']
 
 group = DefineGroup('Drv', src, depend = [''], CPPPATH = CPPPATH)
 
