@@ -1,0 +1,27 @@
+Import('RTT_ROOT')
+Import('rtconfig')
+from building import *
+
+cwd     = os.path.join(str(Dir('#')), 'ocp')
+
+# add the general drvers.
+src = Split("""
+adc/adc.c
+tim/tim_general.c
+flash/flash.c
+iwdg/iwdg.c
+usb/usb.c
+""")
+
+
+    
+CPPPATH = []
+CPPPATH = [cwd + '/../conf']
+#CPPPATH += [cwd + '/../inc']
+#CPPPATH += [cwd + '/../../../include']
+#CPPPATH += [cwd + '/../lib/sort/flush_left']
+#CPPPATH += [cwd + '/../lib/sort/char_swap']
+
+group = DefineGroup('Ocp', src, depend = [''], CPPPATH = CPPPATH)
+
+Return('group')

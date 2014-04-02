@@ -1,0 +1,260 @@
+/**
+ * @file    gas_value_get.c
+ * @brief   获得气体浓度
+ * @author  ptz
+ * @email   ptz19861212@163.com
+ * @version 0.0.1
+ * @date    2013-12-22 09:54:06 星期日 
+ * @history (1).2013-12-22 09:54:06 星期日 create
+ */
+/* Copyright (C)
+ * 
+ * My own license
+ * All right reserved
+ * 
+ */
+
+#include "gas_value_get_in.h"
+
+
+/**
+ * @brief   正向气体浓度求数值
+ *
+ * @param   lpPoint 当前的点
+ * @param   lpRef1 参考点1
+ * @param   lpRef3 参考点3
+ * @param   lThreshold 参考点1向上的屏蔽数值
+ */
+void GasValueGetPositive(S_Gas_Point* lpPoint,
+							S_Gas_Point* lpRef1,
+							S_Gas_Point* lpRef3,
+							uint8_t lThreshold)
+{
+	uint16_t lTmp;
+	uint16_t lAdc;
+
+	// 防止在计算过程中被ADC采样的进程改变了数值，导致计算出现不可预测的后果
+	lAdc = lpPoint->Adc;
+
+	if (lAdc > lpRef1->Adc)
+	{
+		lTmp = lAdc - lpRef1->Adc;
+	}
+	else
+	{
+		lTmp = 0;
+	}
+
+	if (lTmp > lThreshold)
+	{
+		#if (CONFIG_GAS_VALUE_BITS == 16)
+			uint32_t lProduct = 0;
+
+			lProduct = lpRef3->Value - lpRef1->Value;
+			lProduct *= lTmp;
+			lpPoint->Value = (lProduct / (lpRef3->Adc - lpRef1->Adc)) +
+								lpRef1->Value;
+		#elif (my_gas_t == uint32_t)
+		#endif
+	}
+	else
+	{
+		lpPoint->Value = lpRef1->Value;
+	}
+}
+
+
+/**
+ * @brief   负向气体浓度求数值
+ *
+ * @param   lpPoint 当前的点
+ * @param   lpRef1 参考点1
+ * @param   lpRef3 参考点3
+ * @param   lThreshold 参考点1向上的屏蔽数值
+ */
+void GasValueGetNegative(S_Gas_Point* lpPoint,
+							S_Gas_Point* lpRef1,
+							S_Gas_Point* lpRef3,
+							uint8_t lThreshold)
+{
+	uint16_t lTmp;
+	uint16_t lAdc;
+
+	// 防止在计算过程中被ADC采样的进程改变了数值，导致计算出现不可预测的后果
+	lAdc = lpPoint->Adc;
+
+	if (lAdc < lpRef3->Adc)
+	{
+		lTmp = lpRef3->Adc - lAdc;
+	}
+	else
+	{
+		lTmp = 0;
+	}
+
+	if (lTmp > lThreshold)
+	{
+		#if (CONFIG_GAS_VALUE_BITS == 16)
+			uint32_t lProduct = 0;
+
+			lProduct = lpRef1->Value - lpRef3->Value;
+			lProduct *= lTmp;
+			lpPoint->Value = (lProduct / (lpRef3->Adc - lpRef1->Adc)) +
+								lpRef3->Value;
+		#elif (my_gas_t == uint32_t)
+		#endif
+	}
+	else
+	{
+		lpPoint->Value = lpRef3->Value;
+	}
+}
+
+
+/**
+ * @brief   双向气体浓度求数值
+ *
+ * @param   lpPoint 当前的点
+ * @param   lpRef1 参考点1
+ * @param   lpRef3 参考点3
+ * @param   lThreshold 参考点1向上的屏蔽数值
+ */
+void GasValueGetBoth(S_Gas_Point* lpPoint,
+							S_Gas_Point* lpRef1,
+							S_Gas_Point* lpRef2,
+							S_Gas_Point* lpRef3,
+							S_Gas_Point* lpRef4,
+							uint8_t lThreshold)
+{
+	uint16_t lTmp;
+	uint16_t lAdc;
+
+	// 防止在计算过程中被ADC采样的进程改变了数值，导致计算出现不可预测的后果
+	lAdc = lpPoint->Adc;
+
+	if (lAdc > lpRef1->Adc)
+	{
+		lTmp = lAdc - lpRef1->Adc;
+	}
+	else
+	{
+		lTmp = 0;
+	}
+
+	if (lTmp > lThreshold)
+	{
+		#if (CONFIG_GAS_VALUE_BITS == 16)
+			uint32_t lProduct = 0;
+
+//			lProduct = lpRef3->Value - lpRef1->Value;
+//			lProduct *= lTmp;
+//			lpPoint->Value = (lProduct / (lpRef3->Adc - lpRef1->Adc)) +
+//								lpRef1->Value;
+
+			// 点在参考1和参考3之间
+			if (lAdc < lpRef3->Adc)
+			{
+				// 参考点2正常， 分为1-2和2-3 两端区间
+				if ((lpRef2->Adc > lpRef1->Adc) && (lpRef2->Adc < lpRef3->Adc))
+				{
+					// 点在参考点1和参考点2之间，按照1-2斜率
+					if (lAdc < lpRef2->Adc)
+					{
+						lProduct = lpRef2->Value - lpRef1->Value;
+						lProduct *= lAdc - lpRef1->Adc;
+						lpPoint->Value = (lProduct / (lpRef2->Adc - lpRef1->Adc))
+												+ lpRef1->Value;
+
+					}
+					// 点在参考点2和参考点3之间，按照2-3斜率
+					else if (lAdc > lpRef2->Adc)
+					{
+						lProduct = lpRef3->Value - lpRef2->Value;
+						lProduct *= lAdc - lpRef2->Adc;
+						lpPoint->Value = (lProduct / (lpRef3->Adc - lpRef2->Adc))
+												+ lpRef2->Value;
+					}
+					// 点在参考点2的位置
+					else
+					{
+						lpPoint->Value = lpRef2->Value;
+					}
+				} // end of if ((lpRef2->Adc > lpRef1->Adc) &&
+				// 					(lpRef2->Adc < lpRef3->Adc))
+				// 参考点2不正常，直接1-3区间，按照1-3斜率
+				else
+				{
+					lProduct = lpRef3->Value - lpRef1->Value;
+					lProduct *= lAdc - lpRef1->Adc;
+					lpPoint->Value = (lProduct / (lpRef3->Adc - lpRef1->Adc))
+											+ lpRef1->Value;
+				}
+			}
+			// 点在参考点3以上
+			else if (lAdc > lpRef3->Adc)
+			{
+				// 参考点4正常，就是3-4和4以上两个区间，
+				if (lpRef4->Adc > lpRef3->Adc)
+				{
+					// 点在3-4之间，按照3-4斜率
+					if (lAdc < lpRef4->Adc)
+					{
+						lProduct = lpRef4->Value - lpRef3->Value;
+						lProduct *= lAdc - lpRef3->Adc;
+						lpPoint->Value = (lProduct / (lpRef4->Adc - lpRef3->Adc))
+												+ lpRef3->Value;
+					}
+					// 点在4以上的区间，按照1-4的斜率
+					else if (lAdc > lpRef4->Adc)
+					{
+						lProduct = lpRef4->Value - lpRef1->Value;
+						lProduct *= lAdc - lpRef1->Adc;
+						lpPoint->Value = (lProduct / (lpRef4->Adc - lpRef1->Adc))
+												+ lpRef1->Value;
+					}
+					// 点在点4的位置
+					else
+					{
+						lpPoint->Value = lpRef4->Value;
+					}
+
+				}
+				// 参考点4不正常，直接3以上区间，按照1-3的斜率
+				else
+				{
+					lProduct = lpRef3->Value - lpRef1->Value;
+					lProduct *= lAdc - lpRef1->Adc;
+					lpPoint->Value = (lProduct / (lpRef3->Adc - lpRef1->Adc))
+											+ lpRef1->Value;
+
+				}
+			} // end of else if (lpPoint->Adc > lpRef3->Adc)
+			// 点在参考点3的位置
+			else
+			{
+				lpPoint->Value = lpRef3->Value;
+			}
+		#elif (my_gas_t == uint32_t)
+		#endif
+	}
+	else
+	{
+		lpPoint->Value = lpRef1->Value;
+	}
+}
+
+
+/**
+ * @brief   气体获得标气的上限和下限
+ *
+ * @param   lpGas 气体结构体
+ * @param   lpInput 输入的数值上下限
+ */
+void GasValueLimitGet(S_Gas* lpGas,
+								S_Value_Input_Gas* lpInput)
+{
+	lpInput->Up = 0xFFFF;
+	lpInput->Low = 0;
+	lpInput->Init = lpGas->pTemp->Point.Value;
+//	lpInput->Init = lpGas->pTemp->AlarmSave.Stel;
+}

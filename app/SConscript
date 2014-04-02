@@ -1,0 +1,82 @@
+Import('RTT_ROOT')
+Import('rtconfig')
+from building import *
+
+cwd     = os.path.join(str(Dir('#')), 'app')
+
+# add the general drvers.
+src = Split("""
+state_app/state_detect.c
+menu_app/menu_tab.c
+menu_app/menu_root.c
+menu_app/menu_param.c
+menu_app/menu_cali.c
+menu_app/menu_time.c
+menu_app/menu_restore.c
+menu_app/menu_manuf.c
+menu_app/menu_debug.c
+menu_app/menu_user.c
+menu_app/menu_param_alarm.c
+menu_app/menu_param_upper.c
+menu_app/menu_param_lower.c
+menu_app/menu_param_stel.c
+menu_app/menu_param_twa.c
+menu_app/menu_param_pump.c
+menu_app/menu_param_bak.c
+menu_app/menu_rst_param.c
+menu_app/menu_rst_cali.c
+menu_app/menu_debug_zero.c
+menu_app/menu_debug_coeff.c
+menu_app/menu_debug_ref1.c
+menu_app/menu_debug_ref2.c
+menu_app/menu_debug_build.c
+menu_app/menu_user_group.c
+menu_app/menu_user_upgrade.c
+menu_app/menu_user_degrade.c
+menu_app/menu_param_alarm_sound.c
+menu_app/menu_param_alarm_vibration.c
+menu_app/menu_param_language.c
+display_app/display_app.c
+self_check_app/self_check_root.c
+self_check_app/self_check_tab.c
+self_check_app/self_check_sample.c
+self_check_app/self_check_version.c
+self_check_app/self_check_build_date.c
+self_check_app/self_check_build_time.c
+self_check_app/self_check_manf_date.c
+self_check_app/self_check_warranty_date.c
+self_check_app/self_check_gas_name.c
+self_check_app/self_check_cali_date.c
+self_check_app/self_check_cali_time.c
+self_check_app/self_check_alarm_upper.c
+self_check_app/self_check_alarm_lower.c
+self_check_app/self_check_alarm_stel.c
+self_check_app/self_check_alarm_twa.c
+self_check_app/self_check_alarm_sound.c
+self_check_app/self_check_alarm_vibration.c
+self_check_app/self_check_usr_group.c
+self_check_app/self_check_end.c
+self_check_app/self_check_gas_range.c
+""")
+
+
+    
+CPPPATH = []
+CPPPATH += [cwd + '/../inc']
+CPPPATH += [cwd + '/../lib/menu']
+CPPPATH += [cwd + '/../lib/self_check']
+CPPPATH += [cwd + '/../lib/state']
+CPPPATH += [cwd + '/../lib/cali/gas_cali']
+CPPPATH += [cwd + '/../lib/sort/flush_right']
+CPPPATH += [cwd + '/../drv/display']
+
+
+#CPPPATH = [cwd + '/../conf']
+#CPPPATH += [cwd + '/../../../include']
+#CPPPATH += [cwd + '/../lib/sort/flush_left']
+#CPPPATH += [cwd + '/../lib/sort/char_swap']
+#CPPPATH += [cwd + '/../lib/state']
+
+group = DefineGroup('App', src, depend = [''], CPPPATH = CPPPATH)
+
+Return('group')
